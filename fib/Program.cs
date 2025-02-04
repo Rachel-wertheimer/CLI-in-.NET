@@ -3,16 +3,16 @@ using System.CommandLine;
 using System.Reflection.Emit;
 
 
-
+//הגדרת השורש 
 var rootCommand = new RootCommand("root file");
-
+//הגדרת הBUNDLE 
 var bundleCommad = new Command("bundle", "bundle file");
 
+//הגדרת הOPTIONS 
 var bundleOption = new Option<FileInfo>("--output", "file pathand and name");
 bundleOption.AddAlias("-o");//כינוי אליאס
 
 var language = new Option<string>("--language", "file with this language");
-
 language.AddAlias("-l");
 
 var note = new Option<bool>("--note", "file note");
@@ -95,10 +95,12 @@ bundleCommad.SetHandler((output, note, language, sort, author, remove_empty_line
                             string relativePath = Path.GetRelativePath(output.FullName, file);
                             writer.WriteLine("//the relative Path is: " + relativePath);
                         }
+                        //בדיקה האם נתנו לי שם יצור בקובץ 
                         if (author != null)
                         {
                             writer.WriteLine("//the name of the file creator: " + author);
                         }
+                        //האם בקשו ממני להסיר שורת ריקות 
                         if (remove_empty_line)
                         {
                             while ((line = reader.ReadLine()) != null)
@@ -124,13 +126,17 @@ bundleCommad.SetHandler((output, note, language, sort, author, remove_empty_line
                 }
             }
         }
-    }
+    }//המקרה של שגיאה לא מוצא ניתוב
     catch (DirectoryNotFoundException ex)
     {
         Console.WriteLine("file path is invalid");
     }
+    //במקרה שנופל שגיאה 
+    catch(Exception e) {
+        Console.WriteLine("error"+e);
+    }
 }, bundleOption, note, language, sort, author, remove_empty_line);
-
+//יצרת כלי של יצרת קובץ 
 var creat_rsp = new Command("creat-rsp", "creat_rsp file");
 
 rootCommand.AddCommand(creat_rsp);
@@ -140,8 +146,11 @@ creat_rsp.SetHandler(() =>
     try
     {
         string rspFilePath = "MyRespons.rsp";
+        //פתיחת הקובץ לכתיבה 
         using (StreamWriter sw = new StreamWriter(rspFilePath))
         {
+            // מה הקלט מהמשתמש
+            // בדיקה מה להוסיף לקובץ
             Console.WriteLine("enter file path *if you want* and file name");
             string output_rsp = Console.ReadLine();
             sw.WriteLine("--output " + output_rsp);
