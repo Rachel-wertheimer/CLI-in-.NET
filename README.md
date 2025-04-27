@@ -13,7 +13,7 @@ and generates a `.rsp` response file for easier future execution.
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/yourrepository.git
+git clone https://github.com/Rachel-wertheimer/CLI-in-.NET.git
 cd yourrepository
 dotnet build
 ```
@@ -74,4 +74,5 @@ dotnet run @MyRespons.rsp
 ## Contribution
 
 Feel free to open Pull Requests with improvements, bug fixes, or new features.
+
 
