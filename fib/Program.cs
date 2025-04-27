@@ -40,43 +40,32 @@ bundleCommad.SetHandler((output, note, language, sort, author, remove_empty_line
 {
     try
     {
-        // בדיקה אם output הוא null
         if (output == null)
         {
             Console.WriteLine("Error: Missing required option --output | -o");
             return;
         }
-
-        // בדיקה אם language הוא null או ריק
-        if (string.IsNullOrEmpty(language))
+             if (string.IsNullOrEmpty(language))
         {
             Console.WriteLine("Error: Missing required option --language | -l");
             return;
         }
-
         else
         {
-            //שליפת הניתוב  מאיפה הריצו לי את הפקודה 
             string currentDirectory = Directory.GetCurrentDirectory();
             string searchPattern = "";
             string[] sortedFilePaths;
-            //מה שלחו לי באופציה לבחירת שפה 
-
             if (language == "all")
                 searchPattern = "";
             else
                 searchPattern = "*" + language;
-            //שליפת כל הקבצים מהניתוב ומתקיות משנה
             string[] files = Directory.GetFiles(currentDirectory, searchPattern, SearchOption.AllDirectories);
-            //בדיקה האם באמת קיים קבצים בניתוב
             if (files.Length == 0)
                 Console.WriteLine("file is not exists");
             else
             {
-                //?האם השתמשו באופציה של מיון
                 if (sort)
                 {
-                    //מיון הניתוב לפי שמות בסדר ה-א,ב 
                     files = files.OrderBy(files => Path.GetFileNameWithoutExtension(files)).ToArray();
                 }
                 foreach (string file in files)
@@ -86,21 +75,16 @@ bundleCommad.SetHandler((output, note, language, sort, author, remove_empty_line
                         using StreamReader reader = new StreamReader(file);
                         using StreamWriter writer = new StreamWriter(output.FullName, true);
                         string line;
-                        // note האם השתמשו באופציה של   
                         if (note)
-                        {
-                            //bundle שליפת השם של הקובץ המועתק כרגע לקובץ ה 
+                        {  
                             writer.WriteLine("//the name file: " + Path.GetFileNameWithoutExtension(file));
-                            //שליפת הניתוב ביחסי בין קובץ החדש לקובץ הנוכחי
                             string relativePath = Path.GetRelativePath(output.FullName, file);
                             writer.WriteLine("//the relative Path is: " + relativePath);
                         }
-                        //בדיקה האם נתנו לי שם יצור בקובץ 
                         if (author != null)
                         {
                             writer.WriteLine("//the name of the file creator: " + author);
                         }
-                        //האם בקשו ממני להסיר שורת ריקות 
                         if (remove_empty_line)
                         {
                             while ((line = reader.ReadLine()) != null)
@@ -126,66 +110,52 @@ bundleCommad.SetHandler((output, note, language, sort, author, remove_empty_line
                 }
             }
         }
-    }//המקרה של שגיאה לא מוצא ניתוב
+    }
     catch (DirectoryNotFoundException ex)
     {
         Console.WriteLine("file path is invalid");
     }
-    //במקרה שנופל שגיאה 
     catch(Exception e) {
         Console.WriteLine("error"+e);
     }
 }, bundleOption, note, language, sort, author, remove_empty_line);
-//יצרת כלי של יצרת קובץ 
 var creat_rsp = new Command("creat-rsp", "creat_rsp file");
-
 rootCommand.AddCommand(creat_rsp);
-
 creat_rsp.SetHandler(() =>
 {
     try
     {
         string rspFilePath = "MyRespons.rsp";
-        //פתיחת הקובץ לכתיבה 
         using (StreamWriter sw = new StreamWriter(rspFilePath))
         {
-            // מה הקלט מהמשתמש
-            // בדיקה מה להוסיף לקובץ
             Console.WriteLine("enter file path *if you want* and file name");
             string output_rsp = Console.ReadLine();
             sw.WriteLine("--output " + output_rsp);
-
             Console.WriteLine("enter language that you want in your file * yoo can enter 'all'*");
             string language_rsp = Console.ReadLine();
             sw.WriteLine("--language " + language_rsp);
-
             Console.WriteLine("enter 'true' if you want remove_empty_lines");
             string remove_empty_lines_rsp = Console.ReadLine();
             if (bool.Parse(remove_empty_lines_rsp))
                 sw.WriteLine("--remove_empty_lines");
-
             Console.WriteLine("enter 'true' if you want sort file / false");
             string sort_rsp = Console.ReadLine();
             if (bool.Parse(sort_rsp))
                 sw.WriteLine("--sort");
-
             Console.WriteLine("enter 'true' if you want write name file and path fole in the new file / false");
             string note_rsp = Console.ReadLine();
             if (bool.Parse(note_rsp))
                 sw.WriteLine("--note");
-
             Console.WriteLine("enter registering the name of the file creator * if yoy dont want enter false");
             string author_rsp = Console.ReadLine();
             if (author_rsp != "false")
                 sw.WriteLine("--author " + author_rsp);
         }
-
     }
     catch (Exception ex)
     {
         Console.WriteLine("Exception 404");
     }
 });
-
 rootCommand.InvokeAsync(args);
 
