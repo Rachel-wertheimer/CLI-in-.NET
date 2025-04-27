@@ -62,7 +62,7 @@ You will be prompted to enter:
 After creating a `.rsp` file, you can run:
 
 ```bash
-dotnet run @MyRespons.rsp
+fib bundle @MyRespons.rsp
 ```
 
 ## Error Handling
